@@ -68,6 +68,12 @@ export class LocalVectorStorage implements IVectorRepository {
                 }
             }
 
+            if (chunk.metadata?.section === "Education") {
+                if (queryLower.includes("okul") || queryLower.includes("üniversite") || queryLower.includes("mezun") || queryLower.includes("eğitim") || queryLower.includes("gpa") || queryLower.includes("lisans")) {
+                    score += 5;
+                }
+            }
+
             // Priority boost
             if (chunk.metadata?.priority === "high") {
                 score *= 1.5;

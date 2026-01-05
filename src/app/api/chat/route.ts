@@ -20,11 +20,17 @@ export async function POST(req: Request) {
         }
 
         const useCase = await ServiceRegistry.getGetChatResponseUseCase();
+
+        console.time('OpenAI Check');
         const response = await useCase.execute(messages as ChatMessage[], userMessage);
+        console.timeEnd('OpenAI Check');
 
         return NextResponse.json({ response });
     } catch (error: any) {
         console.error('Chat API Error:', error);
-        return NextResponse.json({ error: 'Something went wrong', details: error.message }, { status: 500 });
+        return NextResponse.json({
+            error: 'Something went wrong',
+            details: error.message || 'Unknown error'
+        }, { status: 500 });
     }
 }

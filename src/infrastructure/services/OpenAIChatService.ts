@@ -8,10 +8,9 @@ export class OpenAIChatService implements IChatRepository {
 
     constructor() {
         this.model = new ChatOpenAI({
-            modelName: "gpt-4o",
-            temperature: 0.2, // Slightly more creative but still precise for CV
+            modelName: "gpt-4o-mini",
+            temperature: 0.7, // Slightly more creative but still precise for CV
             openAIApiKey: process.env.OPENAI_API_KEY,
-            streaming: true,
         });
     }
 

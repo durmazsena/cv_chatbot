@@ -4,6 +4,15 @@ import { ChatMessage } from '@/domain/entities/chat';
 
 export async function POST(req: Request) {
     try {
+        // Check API key first
+        if (!process.env.OPENAI_API_KEY) {
+            console.error('OPENAI_API_KEY is not set');
+            return NextResponse.json({
+                error: 'API configuration error',
+                details: 'OPENAI_API_KEY is not configured'
+            }, { status: 500 });
+        }
+
         const { messages, userMessage } = await req.json();
 
         if (!userMessage) {

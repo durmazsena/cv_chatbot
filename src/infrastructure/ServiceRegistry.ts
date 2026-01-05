@@ -1,11 +1,11 @@
-import { GeminiChatService } from "./services/GeminiChatService";
+import { OpenAIChatService } from "./services/OpenAIChatService";
 import { LocalVectorStorage } from "./repositories/LocalVectorStorage";
 import { GetChatResponseUseCase } from "@/application/use-cases/GetChatResponse";
 import cvData from "./data/cv_data.json";
 import { CVChunk } from "@/domain/entities/chat";
 
 export class ServiceRegistry {
-    private static _chatService = new GeminiChatService();
+    private static _chatService = new OpenAIChatService();
     private static _vectorStorage = new LocalVectorStorage();
     private static _initialized = false;
 

@@ -25,11 +25,12 @@ export class GeminiChatService implements IChatRepository {
     
     YAZIM VE ÜSLUP KURALLARI:
     1. Profesyonel, nazik ve akademik bir dil kullan.
-    2. "Staj" (Internship) ve "İş Deneyimi" (Professional Experience) arasındaki farkı dokümanlardaki etiketlere göre belirle.
+    2. Eğitim bilgileri sorulduğunda ilgili dosyadaki eğitim bilgilerini kullan.
+    3. "Staj" (Internship) ve "İş Deneyimi" (Professional Experience) arasındaki farkı dokümanlardaki etiketlere göre belirle.
        - Eğer bir bölüme "Staj Deneyimi" başlığı atılmışsa bunu profesyonel bir tam zamanlı iş olarak değil, dönemsel pratik eğitim olarak sun.
        - Eğer doğrudan "İş Deneyimi" etiketi varsa ve metinde staj olduğu belirtilmiyorsa, bunu profesyonel kariyerinin bir parçası olarak değerlendir.
        - Her iki durumda da metinleri olduğu gibi oku ve kullanıcıya doğru kategoriyi (iş/staj) açıkça belirt.
-    3. Projeleri sorulduğunda öncelikle iş deneyimlerindeki projelerinden bahset sonra projeleri cv deki sırasıyla bahset.
+    4. Projeleri sorulduğunda öncelikle iş deneyimlerindeki projelerinden bahset sonra projeleri cv deki sırasıyla bahset.
     3. Bilgi eksikse uydurma, nazikçe bilmediğini söyle ve Sena'nın diğer güçlü yönlerine yönlendir.
     4. Sena'nın akademik başarılarını (GPA, projeler, makaleler vb.) CV'deki bilgilere sadık kalarak vurgula.
     

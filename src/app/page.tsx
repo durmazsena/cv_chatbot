@@ -1,65 +1,77 @@
-import Image from "next/image";
+import { ChatInterface } from '../components/chat/ChatInterface';
+import { Github, Linkedin, Mail } from 'lucide-react';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen w-full bg-[#fefcff] relative">
+      {/* Dreamy Sky Pink Glow */}
+      <div
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: `
+            radial-gradient(circle at 30% 70%, rgba(173, 216, 230, 0.35), transparent 60%),
+            radial-gradient(circle at 70% 30%, rgba(255, 182, 193, 0.4), transparent 60%)`,
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 max-w-6xl mx-auto px-6 py-12 md:py-16 flex flex-col items-center">
+        {/* Hero Section */}
+        <div className="text-center mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <div className="mb-6">
+            <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-pink-300 to-purple-400 p-1 shadow-lg shadow-pink-200/50">
+              <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-3xl font-bold text-purple-500">
+                SD
+              </div>
+            </div>
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-pink-500 to-rose-400 tracking-tight">
+            Sena's AI Assistant
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-base md:text-lg text-slate-600 max-w-xl mx-auto leading-relaxed mb-6">
+            AI/ML Engineer • Software Engineer hakkında her şeyi sorabilirsin
           </p>
+
+          {/* Social Links */}
+          <div className="flex justify-center gap-4">
+            <a
+              href="https://github.com/durmazsena"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-white/80 hover:bg-white border border-slate-200 text-slate-600 hover:text-purple-600 transition-all shadow-sm hover:shadow-md"
+            >
+              <Github size={20} />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/sena-durmaz-s01"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-white/80 hover:bg-white border border-slate-200 text-slate-600 hover:text-purple-600 transition-all shadow-sm hover:shadow-md"
+            >
+              <Linkedin size={20} />
+            </a>
+            <a
+              href="mailto:durmazsenawork@gmail.com"
+              className="p-3 rounded-full bg-white/80 hover:bg-white border border-slate-200 text-slate-600 hover:text-purple-600 transition-all shadow-sm hover:shadow-md"
+            >
+              <Mail size={20} />
+            </a>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Chat Interface Container */}
+        <div className="w-full max-w-4xl rounded-3xl overflow-hidden shadow-xl border border-white/60 backdrop-blur-xl bg-white/70 h-[550px] flex flex-col">
+          <ChatInterface />
         </div>
-      </main>
-    </div>
+
+        {/* Footer Info */}
+        <div className="mt-8 text-slate-400 text-sm flex gap-4">
+          <span>Built with Next.js + LangChain</span>
+          <span>•</span>
+          <span>Powered by Gemini 2.0</span>
+        </div>
+      </div>
+    </main>
   );
 }

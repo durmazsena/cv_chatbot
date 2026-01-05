@@ -23,14 +23,25 @@ export const ChatInterface = () => {
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [streamingContent, setStreamingContent] = useState('');
+    const [typingContent, setTypingContent] = useState('');
     const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
-    }, [messages, streamingContent]);
+    }, [messages, typingContent]);
+
+    const typeText = async (text: string) => {
+        let displayed = '';
+        for (let i = 0; i < text.length; i++) {
+            displayed += text[i];
+            setTypingContent(displayed);
+            // 8ms per character for smooth typing effect
+            await new Promise(r => setTimeout(r, 8));
+        }
+        return text;
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,7 +53,7 @@ export const ChatInterface = () => {
         setInput('');
         setMessages(prev => [...prev, { role: 'user', content: text }]);
         setIsLoading(true);
-        setStreamingContent('');
+        setTypingContent('');
 
         try {
             const response = await fetch('/api/chat', {
@@ -54,59 +65,23 @@ export const ChatInterface = () => {
                 }),
             });
 
-            if (!response.ok) throw new Error('Stream failed');
+            const data = await response.json();
 
-            const reader = response.body?.getReader();
-            const decoder = new TextDecoder();
-            let fullContent = '';
-            let displayedContent = '';
-
-            if (reader) {
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n');
-
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            const data = line.slice(6);
-                            if (data === '[DONE]') continue;
-
-                            try {
-                                const parsed = JSON.parse(data);
-                                if (parsed.text) {
-                                    // Add new text to full content
-                                    fullContent += parsed.text;
-
-                                    // Display character by character with delay
-                                    const newChars = parsed.text;
-                                    for (const char of newChars) {
-                                        displayedContent += char;
-                                        setStreamingContent(displayedContent);
-                                        // Small delay for typing effect (5ms per char)
-                                        await new Promise(r => setTimeout(r, 5));
-                                    }
-                                }
-                            } catch {
-                                // Skip malformed JSON
-                            }
-                        }
-                    }
-                }
-            }
-
-            // After streaming completes, add to messages
-            if (fullContent) {
-                setMessages(prev => [...prev, { role: 'assistant', content: fullContent }]);
+            if (data.response) {
+                // Type out the response character by character
+                await typeText(data.response);
+                // After typing complete, add to messages
+                setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
+                setTypingContent('');
+            } else if (data.error) {
+                setMessages(prev => [...prev, { role: 'assistant', content: 'Üzgünüm, bir hata oluştu: ' + data.details }]);
             }
         } catch (error) {
             console.error('Chat Error:', error);
             setMessages(prev => [...prev, { role: 'assistant', content: 'Üzgünüm, bir hata oluştu. Lütfen tekrar dene.' }]);
         } finally {
             setIsLoading(false);
-            setStreamingContent('');
+            setTypingContent('');
         }
     };
 
@@ -169,8 +144,8 @@ export const ChatInterface = () => {
                         ))}
                     </AnimatePresence>
 
-                    {/* Streaming message */}
-                    {streamingContent && (
+                    {/* Typing animation */}
+                    {typingContent && (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -189,21 +164,18 @@ export const ChatInterface = () => {
                                                 </a>
                                             ),
                                             p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
-                                            ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
-                                            ol: ({ children }) => <ol className="list-decimal list-inside mb-2 space-y-1">{children}</ol>,
-                                            li: ({ children }) => <li>{children}</li>,
                                             strong: ({ children }) => <strong className="font-semibold text-purple-700">{children}</strong>,
                                         }}
                                     >
-                                        {streamingContent}
+                                        {typingContent}
                                     </ReactMarkdown>
-                                    <span className="inline-block w-2 h-4 bg-purple-400 animate-pulse ml-1" />
+                                    <span className="inline-block w-1 h-4 bg-purple-500 animate-pulse ml-0.5" />
                                 </div>
                             </div>
                         </motion.div>
                     )}
 
-                    {isLoading && !streamingContent && (
+                    {isLoading && !typingContent && (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}

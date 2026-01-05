@@ -1,19 +1,10 @@
 import { IVectorRepository } from "@/domain/repositories/interfaces";
 import { CVChunk } from "@/domain/entities/chat";
-import { pipeline } from "@xenova/transformers";
 
 export class LocalVectorStorage implements IVectorRepository {
     private chunks: CVChunk[] = [];
-    private embedder: any = null;
 
     constructor() { }
-
-    private async getEmbedder() {
-        if (!this.embedder) {
-            this.embedder = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
-        }
-        return this.embedder;
-    }
 
     async saveChunks(chunks: CVChunk[]): Promise<void> {
         this.chunks = chunks;
@@ -22,50 +13,78 @@ export class LocalVectorStorage implements IVectorRepository {
     async searchSimilar(query: string, limit: number = 8): Promise<CVChunk[]> {
         if (this.chunks.length === 0) return [];
 
-        // Kullanıcı sorusunu vektöre dönüştür
-        const embedder = await this.getEmbedder();
-        const output = await embedder(query, { pooling: 'mean', normalize: true });
-        const queryEmbedding = Array.from(output.data) as number[];
+        // Keyword-based search as fallback (Netlify serverless friendly)
+        const queryLower = query.toLowerCase();
+        const queryWords = queryLower.split(/\s+/).filter(w => w.length > 2);
 
         const scoredChunks = this.chunks.map(chunk => {
-            let baseScore = chunk.embedding ? this.cosineSimilarity(queryEmbedding, chunk.embedding) : 0;
+            let score = 0;
+            const contentLower = chunk.content.toLowerCase();
 
-            // Metadata-based boosting
+            // Score based on keyword matches
+            for (const word of queryWords) {
+                if (contentLower.includes(word)) {
+                    score += 1;
+                }
+            }
+
+            // Boost based on metadata keywords
+            if (chunk.metadata?.keywords) {
+                for (const keyword of chunk.metadata.keywords) {
+                    if (queryLower.includes(keyword.toLowerCase())) {
+                        score += 2;
+                    }
+                }
+            }
+
+            // Section-based boosting
             if (chunk.metadata?.section === "Work Experience") {
-                baseScore *= 1.3; // %30 boost for professional roles
+                if (queryLower.includes("iş") || queryLower.includes("deneyim") || queryLower.includes("çalış")) {
+                    score += 3;
+                }
             }
 
-            // Skills soruları için tüm skill chunk'larının gelmesini sağla
-            if (chunk.metadata?.section === "Skills" && query.toLowerCase().includes("yetenek")) {
-                baseScore *= 1.2; // %20 boost for skills when asking about yetenekler
+            if (chunk.metadata?.section === "Skills") {
+                if (queryLower.includes("yetenek") || queryLower.includes("teknik") || queryLower.includes("beceri")) {
+                    score += 3;
+                }
             }
 
-            // Priority boost: Önemli projeleri ön plana çıkar
+            if (chunk.metadata?.section === "Projects") {
+                if (queryLower.includes("proje") || queryLower.includes("geliştir") || queryLower.includes("yaptı")) {
+                    score += 3;
+                }
+            }
+
+            if (chunk.metadata?.section === "Contact") {
+                if (queryLower.includes("iletişim") || queryLower.includes("mail") || queryLower.includes("telefon") || queryLower.includes("linkedin") || queryLower.includes("github")) {
+                    score += 5;
+                }
+            }
+
+            if (chunk.metadata?.section === "Internships") {
+                if (queryLower.includes("staj")) {
+                    score += 3;
+                }
+            }
+
+            // Priority boost
             if (chunk.metadata?.priority === "high") {
-                baseScore *= 1.4; // %40 boost for high priority items
+                score *= 1.5;
             }
 
-            // Staj projeleri için düşük öncelik (ana projeler öne çıksın)
+            // Internship context penalty
             if (chunk.metadata?.context === "internship") {
-                baseScore *= 0.8; // %20 reduction for internship projects
+                score *= 0.8;
             }
 
-            return {
-                chunk,
-                score: baseScore
-            };
+            return { chunk, score };
         });
 
         return scoredChunks
+            .filter(item => item.score > 0)
             .sort((a, b) => b.score - a.score)
             .slice(0, limit)
             .map(item => item.chunk);
-    }
-
-    private cosineSimilarity(vecA: number[], vecB: number[]): number {
-        const dotProduct = vecA.reduce((sum, a, i) => sum + a * vecB[i], 0);
-        const magA = Math.sqrt(vecA.reduce((sum, a) => sum + a * a, 0));
-        const magB = Math.sqrt(vecB.reduce((sum, b) => sum + b * b, 0));
-        return dotProduct / (magA * magB);
     }
 }

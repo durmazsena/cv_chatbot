@@ -8,7 +8,7 @@ export class GeminiChatService implements IChatRepository {
 
     constructor() {
         this.model = new ChatGoogleGenerativeAI({
-            model: "gemini-flash-latest",
+            model: "gemini-2.5-flash-lite",
             maxOutputTokens: 2048,
             apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
             streaming: true,

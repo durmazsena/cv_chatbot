@@ -2398,7 +2398,6 @@
     "content": "Proje - SwarMind (Akıllı Tarım): Sürü koordineli (swarm-coordinated) çoklu drone sistemleri kullanan bir akıllı tarım projesi için görüntü işleme boru hattı geliştirmiştir. Tarım arazisi tespiti için Segformer-B3 modelini LoveDA veri kümesi üzerinde ince ayar (fine-tuning) yaparak gerçek zamanlı semantik segmentasyon sağlamıştır. Veri artırma (data augmentation), özel kayıp fonksiyonları (custom loss functions) ve EMA teknikleri ile model performansını artırmıştır. Segmentasyon sonuçları otomatik ekilebilir alan tespiti için hava drone görüntüleriyle eşleştirilmiştir.",
     "metadata": {
       "section": "Projects",
-      "priority": "high",
       "technologies": [
         "Python",
         "Segformer-B3",
@@ -4402,11 +4401,9 @@
   },
   {
     "id": "proj_athlos",
-    "content": "Staj Projesi - ATHLOS (Sporcu ve Antrenör Takip): Özaltın Holding stajı sırasında FlutterFlow kullanarak sporcular ve antrenörler için ilerleme ve diyet takibi yapan bir mobil uygulamanın ön yüzünü geliştirmiştir. Uygulama, kişiselleştirilmiş diyet ve egzersiz programları oluşturmak için OpenAI API kullanmakta ve haftalık takip grafikleri sunmaktadır.",
+    "content": "Proje - ATHLOS (Sporcu ve Antrenör Takip): FlutterFlow kullanarak sporcular ve antrenörler için ilerleme ve diyet takibi yapan bir mobil uygulamanın ön yüzünü geliştirmiştir. Uygulama, kişiselleştirilmiş diyet ve egzersiz programları oluşturmak için OpenAI API kullanmakta ve haftalık takip grafikleri sunmaktadır. Proje halen devam etmektedir.",
     "metadata": {
       "section": "Projects",
-      "context": "internship",
-      "company": "Özaltın Holding",
       "technologies": [
         "FlutterFlow",
         "OpenAI API",

@@ -29,8 +29,11 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-pink-500 to-rose-400 tracking-tight">
             Sena's AI Assistant
           </h1>
-          <p className="text-base md:text-lg text-slate-600 max-w-xl mx-auto leading-relaxed mb-6">
-            AI/ML Engineer • Software Engineer hakkında her şeyi sorabilirsin
+          <p className="text-base md:text-lg text-slate-600 max-w-xl mx-auto leading-relaxed">
+            AI/ML Engineer • Software Engineer
+          </p>
+          <p className="text-sm text-slate-500 mb-6">
+            hakkında her şeyi sorabilirsin
           </p>
 
           {/* Social Links */}

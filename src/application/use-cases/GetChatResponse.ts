@@ -3,6 +3,7 @@ import { ChatMessage } from '@/domain/entities/chat';
 
 const MAX_HISTORY_MESSAGES = 6; // Keep last 6 messages to save tokens
 const MAX_CONTEXT_CHUNKS = 5;   // Limit CV context chunks
+const MAX_USER_MESSAGE_LENGTH = 1000; // Max user message length
 
 export class GetChatResponseUseCase {
     constructor(
@@ -11,8 +12,8 @@ export class GetChatResponseUseCase {
     ) { }
 
     async execute(chatHistory: ChatMessage[], userMessage: string): Promise<string> {
-        // Limit user message length (max 500 chars)
-        const truncatedMessage = userMessage.slice(0, 500);
+        // Limit user message length (max 1000 chars)
+        const truncatedMessage = userMessage.slice(0, MAX_USER_MESSAGE_LENGTH);
 
         // Limit chat history to last N messages
         const limitedHistory = chatHistory.slice(-MAX_HISTORY_MESSAGES);

@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { ServiceRegistry } from '@/infrastructure/ServiceRegistry';
 import { ChatMessage } from '@/domain/entities/chat';
+import { isContentSafe, PROFANITY_WARNING_MESSAGE } from '@/utils/safetyChecker';
+
+const MAX_MESSAGE_LENGTH = 1000;
 
 export async function POST(req: Request) {
     try {
@@ -17,6 +20,22 @@ export async function POST(req: Request) {
 
         if (!userMessage) {
             return NextResponse.json({ error: 'Message is required' }, { status: 400 });
+        }
+
+        // GÜVENLİK 1: Karakter Limiti Kontrolü
+        if (userMessage.length > MAX_MESSAGE_LENGTH) {
+            return NextResponse.json(
+                { error: 'Mesajınız çok uzun. Lütfen biraz kısaltıp tekrar deneyin.' },
+                { status: 400 }
+            );
+        }
+
+        // GÜVENLİK 2: Küfür Filtresi (Maliyet Tasarrufu - AI'a göndermeden engelle)
+        if (!isContentSafe(userMessage)) {
+            return NextResponse.json(
+                { response: PROFANITY_WARNING_MESSAGE },
+                { status: 200 } // 200 dönüyoruz ki frontend hata sanmasın
+            );
         }
 
         const useCase = await ServiceRegistry.getGetChatResponseUseCase();

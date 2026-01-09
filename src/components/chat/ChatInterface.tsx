@@ -17,6 +17,8 @@ const quickActions = [
     "İletişim bilgileri"
 ];
 
+const MAX_MESSAGE_LENGTH = 1000;
+
 export const ChatInterface = () => {
     const [messages, setMessages] = useState<Message[]>([
         { role: 'assistant', content: 'Merhaba! 👋 Ben Sena\'nın yapay zeka asistanıyım. Sena\'nın projeleri, deneyimleri veya teknik becerileri hakkında sorular sorabilirsin!' }
@@ -25,6 +27,11 @@ export const ChatInterface = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [typingContent, setTypingContent] = useState('');
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    // Character limit helpers
+    const charCount = input.length;
+    const isOverLimit = charCount > MAX_MESSAGE_LENGTH;
+    const isNearLimit = charCount > MAX_MESSAGE_LENGTH * 0.9;
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -45,7 +52,7 @@ export const ChatInterface = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!input.trim() || isLoading) return;
+        if (!input.trim() || isLoading || isOverLimit) return;
         await sendMessage(input);
     };
 
@@ -210,21 +217,43 @@ export const ChatInterface = () => {
 
             {/* Input Area */}
             <div className="p-4 border-t border-slate-100 bg-white/50">
-                <form onSubmit={handleSubmit} className="flex gap-3">
-                    <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder="Sena hakkında bir şey sor..."
-                        className="flex-1 bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-purple-300 transition-all placeholder:text-slate-400"
-                    />
-                    <button
-                        type="submit"
-                        disabled={isLoading}
-                        className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 text-white px-5 py-3 rounded-xl transition-all shadow-md hover:shadow-lg"
-                    >
-                        <Send size={18} />
-                    </button>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                    <div className="flex gap-3">
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Sena hakkında bir şey sor..."
+                            className={`flex-1 bg-white border rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 transition-all placeholder:text-slate-400 ${isOverLimit
+                                    ? 'border-red-300 focus:ring-red-200 focus:border-red-300'
+                                    : 'border-slate-200 focus:ring-purple-300 focus:border-purple-300'
+                                }`}
+                        />
+                        <button
+                            type="submit"
+                            disabled={isLoading || isOverLimit}
+                            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-5 py-3 rounded-xl transition-all shadow-md hover:shadow-lg"
+                        >
+                            <Send size={18} />
+                        </button>
+                    </div>
+                    <div className="flex justify-between items-center px-1">
+                        {isOverLimit ? (
+                            <p className="text-xs text-red-500">
+                                Lütfen mesajınızı biraz kısaltın, çok uzun mesajlarda en doğru cevabı veremeyebilirim 🙏
+                            </p>
+                        ) : (
+                            <span />
+                        )}
+                        <span className={`text-xs transition-colors ${isOverLimit
+                                ? 'text-red-500 font-medium'
+                                : isNearLimit
+                                    ? 'text-orange-400'
+                                    : 'text-slate-400'
+                            }`}>
+                            {charCount} / {MAX_MESSAGE_LENGTH}
+                        </span>
+                    </div>
                 </form>
             </div>
         </div>

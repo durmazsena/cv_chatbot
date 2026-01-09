@@ -1,5 +1,5 @@
 import { ChatInterface } from '../components/chat/ChatInterface';
-import { Github, Linkedin, Mail } from 'lucide-react';
+import { Github, Linkedin, Mail, Download } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -40,6 +40,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               className="p-3 rounded-full bg-white/80 hover:bg-white border border-slate-200 text-slate-600 hover:text-purple-600 transition-all shadow-sm hover:shadow-md"
+              title="GitHub"
             >
               <Github size={20} />
             </a>
@@ -48,14 +49,24 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               className="p-3 rounded-full bg-white/80 hover:bg-white border border-slate-200 text-slate-600 hover:text-purple-600 transition-all shadow-sm hover:shadow-md"
+              title="LinkedIn"
             >
               <Linkedin size={20} />
             </a>
             <a
               href="mailto:durmazsenawork@gmail.com"
               className="p-3 rounded-full bg-white/80 hover:bg-white border border-slate-200 text-slate-600 hover:text-purple-600 transition-all shadow-sm hover:shadow-md"
+              title="Email"
             >
               <Mail size={20} />
+            </a>
+            <a
+              href="/Sena_Durmaz_CV.pdf"
+              download="Sena_Durmaz_CV.pdf"
+              className="p-3 rounded-full bg-white/80 hover:bg-white border border-slate-200 text-slate-600 hover:text-purple-600 transition-all shadow-sm hover:shadow-md"
+              title="CV İndir"
+            >
+              <Download size={20} />
             </a>
           </div>
         </div>
@@ -65,11 +76,18 @@ export default function Home() {
           <ChatInterface />
         </div>
 
+        {/* AI Disclaimer */}
+        <div className="mt-6 text-slate-400 text-xs text-center max-w-md">
+          <span className="inline-flex items-center gap-1">
+            ⚠️ AI hata yapabilir. CV kontrolü yapmayı ihmal etmeyin.
+          </span>
+        </div>
+
         {/* Footer Info */}
-        <div className="mt-8 text-slate-400 text-sm flex gap-4">
-          <span>Built with Next.js + LangChain</span>
+        <div className="mt-4 text-slate-400 text-sm flex gap-4">
+          <span>Built with Next.js + LangChain + RAG</span>
           <span>•</span>
-          <span>Powered by Gemini 2.0</span>
+          <span>Powered by OpenAI</span>
         </div>
       </div>
     </main>

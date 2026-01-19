@@ -74,6 +74,18 @@ export class LocalVectorStorage implements IVectorRepository {
                 }
             }
 
+            if (chunk.metadata?.section === "Certificates") {
+                if (queryLower.includes("sertifika") || queryLower.includes("certificate") || queryLower.includes("kurs") || queryLower.includes("eğitim") || queryLower.includes("workshop") || queryLower.includes("yolo") || queryLower.includes("nlp") || queryLower.includes("llm") || queryLower.includes("gdsc") || queryLower.includes("google") || queryLower.includes("btk")) {
+                    score += 4;
+                }
+            }
+
+            if (chunk.metadata?.section === "Articles") {
+                if (queryLower.includes("makale") || queryLower.includes("yayın") || queryLower.includes("article") || queryLower.includes("publication") || queryLower.includes("doi") || queryLower.includes("akademik")) {
+                    score += 4;
+                }
+            }
+
             // Priority boost
             if (chunk.metadata?.priority === "high") {
                 score *= 1.5;

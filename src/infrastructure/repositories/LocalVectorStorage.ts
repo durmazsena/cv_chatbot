@@ -86,6 +86,12 @@ export class LocalVectorStorage implements IVectorRepository {
                 }
             }
 
+            if (chunk.metadata?.section === "References") {
+                if (queryLower.includes("referans") || queryLower.includes("reference") || queryLower.includes("tavsiye")) {
+                    score += 4;
+                }
+            }
+
             // Priority boost
             if (chunk.metadata?.priority === "high") {
                 score *= 1.5;
